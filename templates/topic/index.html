@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+    <link rel="stylesheet" href="/static/css/topic/code.css">
+{% endblock %}
+{% block body %}
+    <div class="container ">
+        <div class="col-sm-8 ">
+            <div class="margin-bottom-10 background-white margin-top-10">
+                {% if tag %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" class="decoration-none"
+                                   href="#tag">
+                                    <img src="{{ tag.icon }}" alt="icon">
+                                    {{ tag.name }}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="tag" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                {{ tag.description }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <ul class="nav nav-tabs topic_sort">
+                    <li class="{% if request.GET.sort == 'hot' %}active{% endif %}">
+                        <a href="?{% if args %}{{ args }}&{% endif %}sort=hot">热门话题</a></li>
+                    <li class="{% if request.GET.sort == 'now' %}active{% endif %}"><a
+                            href="?{% if args %}{{ args }}&{% endif %}sort=now">最新话题</a></li>
+                    <li class="{% if request.GET.sort == 'over' %}active{% endif %}"><a
+                            href="?{% if args %}{{ args }}&{% endif %}sort=over">完结话题</a></li>
+                </ul>
+            </div>
+            {% for topic in topics %}
+                {% include 'topic/topic_list.html' %}
+            {% endfor %}
+            {% include 'pagination.html' %}
+        </div>
+        <div class="col-sm-4" style="border: solid;height: 400px;">
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load topic_tags %}
+<div class="margin-bottom-10 topic-container background-white">
+    <div>
+        <div class="tags-div" style="min-height: 20px">
+            {% if topic.tags.all %}
+                {% for t in topic.tags.all %}
+                    <a href="{% url 'topic:search_topic' %}?tag={{ t.tag_id.name }}"
+                       class="tag-a">{% if t.tag_id.icon != '/static/img/tag/default.png' %}
+                        <img src="{{ t.tag_id.icon }}" alt="">
+                    {% endif %}{{ t.tag_id.name }}</a>
+                {% endfor %}
+            {% endif %}
+            <span class="float-right color-gray">{{ topic.create_time | date:'Y-m-d' }}</span>
+        </div>
+        {% if home_page %}
+            {% if collect %}
+                <div class="display-flex margin-bottom-10 right">
+                    <div><a href="{% url 'user:user_index' topic.user.nickname %}"><img
+                            src="/{{ topic.user.avatar }}" alt="user_avatar" class="user_avatar"></a>&nbsp;
+                    </div>
+                    <div class="display-flex">
+                        <div><a href="{% url 'user:user_index' topic.user.nickname %}"
+                                class="nickname">{{ topic.user.nickname }}&nbsp;</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="display-flex margin-bottom-10 right">
+                <div><a href="{% url 'user:user_index' topic.user.nickname %}"><img
+                        src="/{{ topic.user.avatar }}" alt="user_avatar" class="user_avatar"></a>&nbsp;
+                </div>
+                <div class="display-flex">
+                    <div><a href="{% url 'user:user_index' topic.user.nickname %}"
+                            class="nickname">{{ topic.user.nickname }}&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="font-bold font-size-18 line-height-15">
+            <a href="{% url 'topic:discuss' topic.id %}"
+               class="decoration-none color-black">{{ topic.title }}</a>
+        </div>
+    </div>
+
+    <div class="margin-bottom-10 margin-top-10 text-body"
+         onclick="window.location='{% url 'topic:discuss' topic.id %}'">
+        <div class="thumbnails float-left">{{ topic.content | get_img:'img'  |safe }}</div>
+        <div class="{{ topic.content | get_img:None }} part-visible padding-left-5px">{{ topic.content | get_label:'pre p' | out_img | safe }}</div>
+    </div>
+    <div>
+        {% include 'topic/button_group.html' %}
+    </div>
+</div>

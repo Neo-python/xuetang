@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="e400a056-d4b0-4872-a3f7-dee463c785b6" name="xuetang" url="http://47.97.168.202">
+        <fileTransfer host="47.97.168.202" port="22" rootFolder="/var/www/xuetang" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

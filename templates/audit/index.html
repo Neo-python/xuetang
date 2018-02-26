@@ -1,0 +1,50 @@
+{% load audit_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ title }}{% endblock %} | 学堂</title>
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    {% block resources %}{% endblock %}
+</head>
+<body>
+<div>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'audit:index' %}">审核管理</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'audit:topic' %}">话题审核 <span class="badge">{% audit_count 'topic' None %}</span></a>
+                    </li>
+                    <li><a href="{% url 'audit:comment' %}">评论审核 <span
+                            class="badge">{% audit_count 'comment' None %}</span></a></li>
+                    <li><a href="{% url 'audit:tag' %}">标签审核 <span
+                            class="badge">{% audit_count 'tag' 'delete_status' %}</span></a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            其他
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">无</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/">返回首页</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+{% block body %}
+    <div>
+
+    </div>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% load topic_tags %}
+<button class="color-aliceblue menu-btn sort-btn sort-up {% is_active topic.id USER.user True %}"
+        onclick="topic_loc($(this),{{ topic.id }}, 'True')" data-id="{{ topic.id }}"><span
+        class="glyphicon glyphicon-chevron-up color-blue"></span>&nbsp;
+    <span class="color-blue-danlan like-count">{{ topic.like }}</span>
+</button>
+<button class="color-aliceblue menu-btn sort-btn {% is_active topic.id USER.user False %}"
+        onclick="topic_loc($(this),{{ topic.id }}, 'False')" data-id="{{ topic.id }}"><span
+        class="glyphicon glyphicon-chevron-down color-blue"></span>
+</button>
+
+<button class="menu-btn margin-left24 fa-hover"
+        onclick="window.location='{% url 'topic:discuss' topic.id %}?anchor=true'"><span><i
+        class="fa fa-comment"></i></span>&nbsp;{{ topic | reply_count:'comments' }}&nbsp;评论
+</button>
+{% ifequal USER.user topic.user.user %}
+    <a href="{% url 'topic:modify' %}?topic_id={{ topic.id }}"
+       class="menu-btn margin-left24 fa-hover color-black decoration-none padding-3"><i
+            class="fa fa-edit"></i>&nbsp;编辑</a>
+{% else %}
+    <button class="menu-btn margin-left24 fa-hover {% collection_status USER.user topic.id %} collection"
+            data-id={{ topic.id }}><span><i
+            class="fa fa-star"></i></span>&nbsp;收藏
+    </button>
+{% endifequal %}
+<button class="menu-btn margin-left24 fa-hover share" value="copy{{ topic.id }}"><span><i
+        class="fa fa-share-alt"></i></span>&nbsp;分享内容
+</button>
+<input type="text" value="{{ request.get_host }}{% url 'topic:discuss' topic.id %}"
+       id="copy{{ topic.id }}"
+       class="hidden-left">
+<div class="btn-group dropup">
+    {% ifnotequal USER.user topic.user.user %}
+        <button class="menu-btn margin-lf5" data-toggle="dropdown"><span><i
+                class="fa fa-ellipsis-h"></i></span></button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">不感兴趣</a></li>
+            <li><a href="#">举报内容</a></li>
+        </ul>
+    {% endifnotequal %}
+</div>

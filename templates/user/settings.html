@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}{% endblock %}
+{% block body %}
+    <div class="container">
+        <form action="{% url 'user:modify_personal_information' %}" method="post" enctype="multipart/form-data">
+            <div style="display: block;padding: 5px 0;;margin: 10px 0">
+                <label for="avatar">头像</label>
+                <img src="/{{ user.avatar }}" alt="头像" class="user_avatar" style="float: none">
+                <div style="display: inline-grid;margin-left: 55px;" class="reSignature-div">
+                    <a href="javascript:;" class="reSignature-button"> 修改</a>
+                    <input type="file" class="hidden" name="avatar" placeholder="xx">
+                </div>
+            </div>
+            <div style="display: block;padding: 5px 0;;margin: 10px 0">
+                <label for="signature">签名</label>
+                <div style="display: inline-grid;margin-left: 100px;" class="reSignature-div">
+                    <span class="color-black">{{ user.signature }}<a href="javascript:;"
+                                                                     class="reSignature-button"> 修改</a></span>
+
+                    {% csrf_token %}
+                    <input type="text" placeholder="签名" name="signature" id="signature" class="form-control hidden"
+                           value="{{ user.signature }}">
+                    <input type="submit" class="btn btn-primary hidden" value="提交">
+                </div>
+            </div>
+        </form>
+        <div style="display: block;padding: 5px 0;margin: 10px 0">
+            <label for="email">邮箱</label>
+            {% if user.email %}
+                <div style="display: inline-grid;margin-left: 100px;">
+                    <span>{{ user.email }}</span>
+                </div>
+            {% else %}
+                <div style="display: inline-grid;margin-left: 100px;" class="bindEmail-div">
+                    <span class="color-black bindEmail-button"><a href="javascript:;">绑定邮箱</a></span>
+                    <form action="{% url 'user:bind_email' %}" method="post">
+                        {% csrf_token %}
+                        <div class="display-flex">
+                            <input type="text" hidden value="{{ csrf_token }}" name="csrfmiddlewaretoken">
+                            <input type="email" placeholder="请输入邮箱" class="form-control hidden" name="email"
+                                   id="bindEmail">
+                            <button class="hidden line-height-30 border-none background-gray padding-all-0"
+                                    style="min-width: 111px" id="Vcode-btn">发送验证码
+                            </button>
+                        </div>
+                        <input type="text" name="Vcode" placeholder="请输入收到的验证码" class="form-control hidden">
+                        <input class="btn btn-primary hidden" value="提交" type="submit">
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+        <div style="display: block;padding: 5px 0;margin: 10px 0">
+            <label for="rePassword">帐号密码</label>
+            {% if user.email %}
+                <div style="display: inline-grid;margin-left: 72px;">
+                    <span class="editPassword-button"><a href="javascript:;">修改密码</a></span>
+                    <div class="editPassword-div">
+                        <form action="{% url 'user:modify_password' %}" method="post">
+                            {% csrf_token %}
+                            <input type="password" placeholder="请输入密码" class="form-control hidden" name="password">
+                            <input type="password" placeholder="请再次输入" class="form-control hidden"
+                                   name="password_repeat">
+                            <input type="text" placeholder="请输入验证码" class="form-control hidden" name="Vcode">
+                            <button class="hidden line-height-30 border-none background-gray padding-all-0"
+                                    style="min-width: 111px" id="Vcode-btn2">发送验证码
+                            </button>
+                            <input type="submit" value="提交" class="btn btn-primary hidden">
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div style="display: inline-grid;margin-left: 72px;">
+                    <span>请先绑定邮箱</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <script src="{% static 'js/user/settings.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'audit/index.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+    <link rel="stylesheet" href="{% static 'css/audit/comment.css' %}">
+{% endblock %}
+{% block body %}
+    <div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="width: 10%">用户</th>
+                <th style="width: 4%">类型</th>
+                <th style="width: 7%">时间</th>
+                <th style="width: 10%">操作</th>
+                <th>内容</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% if comments %}
+                {% for comment in comments %}
+                    <tr id="comment{{ comment.id }}">
+                        <td>{{ comment.user.nickname }}</td>
+
+                        <td>{% if comment.reply_obj %}回复{% else %}评论{% endif %}</td>
+                        <td>{{ comment.time|date:'Y-m-d' }}</td>
+                        <td>
+                            <button class="btn btn-success audit-btn" data-id="{{ comment.id }}" data-value="True"
+                                    data-type="status">
+                                审核通过
+                            </button>
+                            <button class="btn btn-danger audit-btn" data-id="{{ comment.id }}"
+                                    data-type="delete_status" data-value="True">
+                                删除
+                            </button>
+                            <button class="btn btn-primary leaveAMessage-btn" data-id="{{ comment.id }}"
+                                    data-to_user="{{ comment.user.id }}">留言
+                            </button>
+                            <input type="text" id="{{ comment.id }}">
+                        </td>
+                        <td>{{ comment.content|safe }}</td>
+                    </tr>
+                {% endfor %}
+
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <input type="text" hidden value="{{ csrf_token }}" id="csrf_token">
+    <script src="{% static 'js/audit/comment.js' %}"></script>
+{% endblock %}

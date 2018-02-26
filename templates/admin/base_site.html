@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    <script src="{% static 'tinymce/js/tinymce/langs/zh_CN.js' %}"></script>
+    <script src="{% static 'tinymce/admin_mce.js' %}"></script>
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+
+{% block nav-global %}
+    <input type="text" id="csrfmiddlewaretoken" value="{{ csrf_token }}" hidden>
+{% endblock %}

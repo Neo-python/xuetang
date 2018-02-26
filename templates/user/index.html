@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+    <link rel="stylesheet" href="{% static 'css/user/index.css' %}">
+{% endblock %}
+{% block body %}
+    <div class="background-gray">
+        <div class="container user_index_body">
+            <div class="user_basis">
+                <div class="user_avatar">
+                    <img src="/{{ user.avatar }}" alt="" class="user_index_avatar">
+                </div>
+                <div class="user_data background-white">
+                    <div>
+                        <h1><span>{{ user.nickname }}</span><span
+                                class="user_index_signature">{{ user.signature }}</span></h1>
+                    </div>
+                    <div class="user_medal">
+                        &nbsp;
+                    </div>
+                    <div class="side-container">
+                        <div class="side-button">
+                            {% if USER %}
+                                {% if USER.user == user.user %}
+                                    <a href="
+                                        {% if collect %}
+                                        {% url 'user:user_index' user.nickname %}
+                                        {% else %}
+                                        {% url 'user:user_index' user.nickname %}?collect=True
+                                        {% endif %}"
+                                       class="menu-btn margin-left24 fa-hover decoration-none color-black padding-3
+                                        {% if collect %}menu-btn-hover{% endif %}">
+                                        <span><i class="fa fa-folder-open"></i></span>&nbsp;收藏夹
+                                    </a>
+                                    <a href="{% url 'user:settings' %}"
+                                       class="menu-btn margin-left24 fa-hover color-black decoration-none padding-3"><span><i
+                                            class="fa fa-edit"></i></span>编辑资料
+                                    </a>
+                                {% else %}
+                                    <button class="menu-btn margin-lf5 fa-hover" data-toggle="modal"
+                                            data-target="#leaveAMessage"><span><i
+                                            class="fa fa-envelope"></i></span>&nbsp;留言
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <button class="menu-btn margin-lf5 fa-hover" data-toggle="modal"
+                                        data-target="#leaveAMessage"><span>
+                                    <i class="fa fa-envelope"></i></span>&nbsp;留言
+                                </button>
+                            {% endif %}
+                            <div class="modal fade" id="leaveAMessage" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                            <h5 class="modal-title" id="myModalLabel">
+                                                正在给 <span class="font-bold font-size-18">{{ user.nickname }}</span>
+                                                留言...
+                                            </h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="padding-lr-25px">
+                                                <div class="row display-flex margin-bottom-10">
+                                                    <img src="/{{ user.avatar }}" class="small-avatar"
+                                                         alt="{{ user.nickname }}">
+                                                    <span class="margin-top-18">:有事请给我留言.</span>
+                                                </div>
+                                                <div class="row">
+                                                    <form action="{% url 'user:leave_message' %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="text" name="to_user" value="{{ user.nickname }}"
+                                                               hidden>
+                                                        <textarea name="content" cols="50" rows="10"
+                                                                  class="form-control"></textarea>
+                                                        <input type="submit" value="发送留言" class="width-100 border-none">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="user_dynamic">
+                <div>
+                    {% if collect %}
+                        <h3>收藏夹</h3>
+                    {% else %}
+                        <h3>TA的话题:</h3>
+                    {% endif %}
+                    {% for topic in topics %}
+                        {% include 'topic/topic_list.html' %}
+                    {% endfor %}
+                    {% include 'pagination.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

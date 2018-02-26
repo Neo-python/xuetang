@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="xuetang">
+    <serverData>
+      <paths name="xuetang">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/audit" local="$PROJECT_DIR$/audit" web="/" />
+            <mapping deploy="/static" local="$PROJECT_DIR$/static" />
+            <mapping deploy="/templates" local="$PROJECT_DIR$/templates" />
+            <mapping deploy="/topic" local="$PROJECT_DIR$/topic" />
+            <mapping deploy="/user" local="$PROJECT_DIR$/user" />
+            <mapping deploy="/xuetang" local="$PROJECT_DIR$/xuetang" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

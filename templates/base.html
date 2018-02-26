@@ -1,0 +1,311 @@
+{% load static %}
+{% load topic_tags %}
+{% load user_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} | python学堂</title>
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'tinymce/js/tinymce/langs/zh_CN.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/xuetang-icon.jpg' %}">
+    {% block resources %}{% endblock %}
+    <script src="{% static 'tinymce/mce.js' %}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row border-tf">
+        <div class="margin-lr100">
+            <nav class="navbar navbar-bottom" role="navigation">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a id="logo-navbar" href="/"><img src="/static/img/xuetan.jpg" alt="logo" id="logo"></a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse navbar-ex1-collapse">
+                    <ul class="nav navbar-nav daohanlan">
+                        <li class="{% if area == '首页' %}
+                        active
+                        {% endif %}"><a href="/">首页</a></li>
+                        <li class="{% if area == 'code' %}
+                        active
+                        {% endif %}"><a href="{% url 'topic:topic_index' 'code' %}">代码讨论</a></li>
+                        <li class="{% if area == 'share' %}
+                        active
+                        {% endif %}"><a href="{% url 'topic:topic_index' 'share' %}">知识分享</a></li>
+                        <li class="{% if area == 'workplace' %}
+                        active
+                        {% endif %}"><a href="{% url 'topic:topic_index' 'workplace' %}">职场话题</a></li>
+                    </ul>
+                    <form action="{% url 'topic:search_topic' %}" role="search" class="navbar-form navbar-left">
+                        <input type="text" class="form-control" placeholder="搜索话题或关键字" name="question">
+                    </form>
+                    <a class="navbar-btn btn background-green font_bold color-white" data-toggle="modal"
+                       data-target="#problem">发起话题</a>
+                    <div class="modal fade" id="problem" tabindex="-1" role="dialog" aria-labelledby="problemLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog" style="width: 80%">
+                            <div class="modal-content">
+                                <form action="{% url 'topic:release' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="modal-header">
+                                        <div class="col-sm-6 padding-left-0">
+                                            <input type="text" class="form-control" placeholder="话题标题" name="title">
+                                        </div>
+                                        <div class="col-sm-2 padding-left-0">
+                                            <select name="area" class="form-control">
+                                                {% get_area %}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3 padding-left-0">
+                                            <input type="text" placeholder="话题标签,多标签以空格隔开." class="form-control"
+                                                   name="tags">
+                                        </div>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h3 class="margin-top-0">话题内容:</h3>
+                                        <textarea name="content" cols="30" rows="10" class="textarea"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button>提交</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% if USER %}
+                        <div class="user_info navbar-nav right">
+                            <a href="{% url 'user:user_index' USER.nickname %}"><img src="/{{ USER.avatar.url }}" alt="头像"
+                                                                                     class="user_avatar"></a>
+                            <div class="info">
+                                <div class="user_name">
+                                    <a href="{% url 'user:user_index' USER.nickname %}" class="">{{ USER.nickname }}</a>
+                                </div>
+                                <div class="user_control">
+                                    <div>
+                                        <a href="{% url 'user:mailbox' %}"><i class="fa fa-envelope-open-o"></i><span
+                                                class="badge unread_count">{% unread_messages USER %}</span></a>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a href="" class="margin-left" data-toggle="dropdown" id="user_set"><i
+                                                class="fa fa-gear" style="font-size: 18px"></i></a>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="user_set"
+                                            style="min-width: 100px">
+                                            <li role="presentation">
+                                                <a role="menuitem" tabindex="-1" href="#">设置</a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a role="menuitem" tabindex="-1" href="{% url 'user:logout' %}">注销帐号</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    {% else %}
+                        <ul class="nav navbar-nav navbar-right navbar-top-margin">
+                            <a class="btn btn-success" id="login-a" data-toggle="modal"
+                               data-target="#loginModal">立即登入</a>
+                            <a class="btn btn-success" id="registered" data-toggle="modal"
+                               data-target="#registeredModal">
+                                快速注册
+                            </a>
+                        </ul>
+                    {% endif %}
+                    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog margin-left">
+                            <div class="modal-content width-65">
+                                <div class="modal-header background-white">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                        &times;
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        登入
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" method="post" id="login_form">
+                                        {% csrf_token %}
+                                        <div class="margin-lr100 margin">
+                                            <label for="userid"> 账号</label><span id="login_error"></span>
+                                            <input type="text" placeholder="账号" id="userid" name="user"
+                                                   class="form-control required">
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <label for="password">密码</label><a
+                                                href="{% url 'user:application_reset_password' %}"
+                                                class="pull-right color-green">忘记密码?</a>
+                                            <input type="password" placeholder="密码" id="pwd" name="password"
+                                                   class="form-control required">
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <label for="remember"><input type="checkbox" id="remember" name="remember">
+                                                记住登入状态
+                                            </label>
+                                            <button type="button" id="login_submit"
+                                                    class="btn background-green right font-1_1em color-white">
+                                                登录
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="registeredModal" tabindex="-1" role="dialog"
+                         aria-labelledby="registeredModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog margin-left">
+                            <div class="modal-content width-65">
+                                <div class="modal-header background-green">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                        &times;
+                                    </button>
+                                    <h4 class="modal-title" id="registeredModalLabel">
+                                        快速注册
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'user:registered' %}" method="post" id="registered_form">
+                                        <input type="text" hidden name="csrfmiddlewaretoken" id="csrfmiddlewaretoken"
+                                               value="{{ csrf_token }}">
+                                        <div class="margin-lr100 margin">
+                                            <label for="user_id">登入帐号<span
+                                                    class="padding-tl-5 color-red">*</span></label><span
+                                                id="user_error"></span>
+                                            <input type="text" id="user_id" name="user"
+                                                   class="form-control required orderly">
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <label for="pwd">密码<span
+                                                    class="padding-tl-5 color-red">*</span></label><span
+                                                id="password_error"></span>
+                                            <input type="password" id="password" name="password"
+                                                   class="form-control required">
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <label for="nickname">昵称<span
+                                                    class="padding-tl-5 color-red">*</span></label><span
+                                                id="nickname_error"></span>
+                                            <input type="text" id="nickname" name="nickname"
+                                                   class="form-control orderly required"
+                                                   placeholder="唯一,不可修改.起名请慎重 ^.^">
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <div class="panel panel-success">
+                                                <div class="panel-heading padding-0">
+                                                    <a data-toggle="collapse" data-parent="#accordion"
+                                                       href="#collapseOne">
+                                                        <i class="fa fa-reorder right"></i>
+                                                    </a>
+                                                </div>
+                                                <div id="collapseOne" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <label for="email">邮箱</label><span id="email_error"></span>
+                                                        <input type="email" id="email" name="email" class="form-control"
+                                                               placeholder="验证邮箱,获得发言免审核权限!">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <img src="" alt="验证码" class="verification-img" id="verification_img">
+                                            <div class="width-65 right">
+                                                <input type="text" id="verification" name="verification"
+                                                       class="form-control required"
+                                                       AUTOCOMPLETE="off">
+                                                <span id="verification_error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="margin-lr100 margin">
+                                            <button type="button" class="btn btn-success background-green width-100"
+                                                    id="registered_submit">
+                                                注册帐号
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.navbar-collapse -->
+            </nav>
+        </div>
+    </div>
+</div>
+{% block body %}
+{% endblock %}
+<footer>
+    <div class="container">
+        <div class="row dl-div">
+            <dl class="col-sm-2">
+                <dt>模块</dt>
+                <dd><a href="">人才服务</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+            </dl>
+            <dl class="col-sm-2">
+                <dt>模块</dt>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+            </dl>
+            <dl class="col-sm-2">
+                <dt>模块</dt>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+            </dl>
+            <dl class="col-sm-2">
+                <dt>模块</dt>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+            </dl>
+            <dl class="col-sm-2">
+                <dt>模块</dt>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+            </dl>
+            <dl class="col-sm-2">
+                <dt>模块</dt>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="">嘿嘿嘿</a></dd>
+                <dd><a href="{% url 'audit:index' %}">嘿嘿嘿</a></dd>
+                <dd><a href="/admin/">嘿嘿嘿</a></dd>
+            </dl>
+        </div>
+        <div class="copyright">
+            &copy;Python 学堂 <br>
+            作者:Neo
+        </div>
+    </div>
+</footer>
+</body>
+<script src="{% static 'js/user/index.js' %}"></script>
+<script src="{% static 'js/base_index.js' %}"></script>
+</html>

@@ -1,0 +1,13 @@
+{#{% for message in messages %}#}
+{#    <div style="display: block" class="dialog_body {% if message.user.nickname == self %}all-right{% else %}all-left{% endif %}">#}
+{#        <div style="display: block">#}
+{#            <a href="{% url 'user:user_index' message.user.nickname %}">#}
+{#                <img src="{{ message.user.avatar }}" alt="{{ message.user.nickname }}" class="small-avatar">#}
+{#            </a>#}
+{#        </div>#}
+{#        <div class="dialog_content">#}
+{#            <div style="display: block">{{ message.content }}</div>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="row"></div>#}
+{#{% endfor %}#}

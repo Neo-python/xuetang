@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load topic_tags %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+    <script src="{% static 'tinymce/comment.js' %}"></script>
+    <script src="{% static 'js/topic/discuss.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/topic/discuss.css' %}">
+{% endblock %}
+{% block body %}
+    <input type="text" id="topic" hidden value="{{ topic.id }}">
+    <input type="text" hidden value="{{ csrf_token }}" id="cs_token">
+    <div class="content_container">
+        <div style="width: 65%" class="background-white shadow">
+            <h3 class="padding-lr-25px">{{ topic.title }}</h3>
+            <div class="trait padding-lr-25px">
+                <div class="width-340">
+                    {% if topic.tags.all %}
+                        {% for t in topic.tags.all %}
+                            <a href="{% url 'topic:search_topic' %}?tag={{ t.tag_id.name }}"
+                               class="tag-a">{% if t.tag_id.icon != '/static/img/tag/default.png' %}
+                                <img src="{{ t.tag_id.icon }}" alt="">
+                            {% endif %}{{ t.tag_id.name }}</a>
+                        {% endfor %}
+                    {% endif %}
+                    {% if USER.level >= 11 %}
+                        <button class="menu-btn margin-left24 fa-hover"><span><i class="fa fa-plus"></i></span>&nbsp;新增标签
+                        </button>
+                    {% endif %}
+                </div>
+                <span class="float-right margin-left-75"><span class="user_name margin-lf5">
+                        <a href="{% url 'user:user_index' topic.user.nickname %}" class="nickname"><img
+                                src="/{{ topic.user.avatar }}" alt=""
+                                class="content_user_avatar"> {{ topic.user.nickname }}</a>
+                </span>
+                    <span class="margin-lf5 color-gray">{{ topic.create_time | date:'Y-m-d' }}</span>
+                </span>
+            </div>
+            <div class="texts padding-lr-25px">
+                {{ topic.content | safe }}
+                <div class="margin-bottom-10 margin-top-10">
+                    {% include 'topic/button_group.html' %}
+                </div>
+            </div>
+            <div class="comment">
+                <div class="comment-waichen">
+                    {% for foo in comments %}
+                        {% if foo.status and not foo.reply_obj_id %}
+                            <div class="comment-body">
+                                <div class="padding-tb10-lr15">
+                                <span>
+                                    <div class="margin-bottom-10">
+                                        <img src="/{{ foo.user.avatar }}" alt="{{ foo.user.nickname }}"
+                                             class="comment_avatar"
+                                             style="display: inline-block">
+                                        <span class="font-bold">{{ foo.user.nickname }}</span>
+                                        <span class="margin-lf5 color-gray float-right">{{ foo.time | date:'Y-m-d' }}</span>
+                                    </div>
+                                    <div>{{ foo.content |safe }}</div>
+                                </span>
+                                    <div style="display: flex" class="margin-bottom-10">
+                                        <button href=""
+                                                class="menu-btn color-gray1 like {% comment_loc foo.id USER.user True %}"
+                                                data-id="{{ foo.id }}"><i
+                                                class="fa fa-thumbs-o-up"></i>&nbsp;
+                                            <span>{% comment_loc_count foo.id %}</span>
+                                        </button>
+                                        <div class="comment_menu_other">
+                                            <button data-target="#comment-{{ foo.id }}" data-toggle="collapse"
+                                                    data-id="{{ foo.id }}"
+                                                    class="menu-btn color-gray1 margin-left24 fa-hover reply-btn"><i
+                                                    class="fa fa-reply"></i>&nbsp;回复{{ foo | reply_count:'reply' }}
+                                            </button>
+                                            <button class="menu-btn color-gray1 margin-left24 fa-hover contra"
+                                                    data-id="{{ foo.id }}"><i
+                                                    class="fa fa-thumbs-o-down"></i>&nbsp;<span>{% comment_loc foo.id USER.user False %}</span>
+                                            </button>
+                                            <button class="menu-btn color-gray1 margin-left24 fa-hover"><i
+                                                    class="fa fa-flag"></i>&nbsp;举报
+                                            </button>
+                                            {% ifequal USER.user topic.user.user %}
+                                                <button class="menu-btn color-gray1 margin-left24 fa-hover"><i
+                                                        class="fa fa-check"></i>&nbsp;采纳
+                                                </button>
+                                            {% endifequal %}
+                                        </div>
+                                    </div>
+                                    <div class="row collapse" id="comment-{{ foo.id }}">
+                                        <div class="margin-left24 margin-r15 reply-div"><span></span><span></span></div>
+                                        <div id="reply-{{ foo.id }}">
+                                        <h1>{{ foo }}</h1>
+                                            {% if USER %}
+
+                                                {% if comments %}
+
+                                                {% endif %}
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="reply{{ foo.id }}">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button class="font-bold color-white comment-btn submitReply"
+                                                            value="{{ foo.id }}">提交
+                                                    </button>
+                                                </div>
+                                            {% else %}
+                                                <span class="padding-lr-25px margin-left35p">回复评论需要你先登入.</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% include 'pagination.html' with topics=comments %}
+            <div class="text-box">
+                <form action="{% url 'topic:comment' topic.id %}" method="post">
+                    {% csrf_token %}
+                    <textarea name="comment" id="#textarea" cols="30" rows="10"></textarea>
+                    <button class="comment-btn font-bold color-white">评论</button>
+                </form>
+            </div>
+        </div>
+        <div style="height: 200px;width: 34%;border: solid 1px" class="background-white">
+
+        </div>
+    </div>
+    <span id="anchor"></span>
+{% endblock %}

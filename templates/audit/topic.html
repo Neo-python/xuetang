@@ -1,0 +1,47 @@
+{% extends 'audit/index.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+    <link rel="stylesheet" href="{% static 'css/audit/topic.css' %}">
+{% endblock %}
+{% block body %}
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th width="10%">用户</th>
+            <th width="10%">标题</th>
+            <th width="60%">内容</th>
+            <th width="7%">时间</th>
+            <th width="10%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if topics %}
+            {% for topic in topics %}
+                <tr id="topic{{ topic.id }}">
+                    <td>{{ topic.user.nickname }}</td>
+                    <td>{{ topic.title }}</td>
+                    <td><div style="overflow-y: auto; max-height: 200px">
+                        {{ topic.content |safe }}
+                    </div></td>
+                    <td>{{ topic.create_time |date:'Y-m-d' }}</td>
+                    <td>
+                        <button class="btn btn-success audit-btn" data-id="{{ topic.id }}" data-value="True" data-type="status"> 审核通过
+                        </button>
+                        <button class="btn btn-danger audit-btn" data-id="{{ topic.id }}" data-value="True" data-type="delete_status">
+                            删除
+                        </button>
+                            <button class="btn btn-primary leaveAMessage-btn" data-id="{{ topic.id }}"
+                                    data-to_user="{{ topic.user.id }}">
+                                留言建议
+                            </button>
+                            <input type="text" id="{{ topic.id }}" placeholder="{{ topic.audit_message }}">
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+    <input type="text" hidden value="{{ csrf_token }}" id="csrf_token">
+    <script src="{% static 'js/audit/topic.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load topic_tags %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}{% endblock %}
+{% block body %}
+    <form action="{% url 'topic:modify' %}" method="post">
+        <input type="text" hidden name="topic_id" value="{{ topic.id }}">
+        {% csrf_token %}
+        <div class="modal-header">
+            <div class="col-sm-6 padding-left-0">
+                <input type="text" class="form-control" placeholder="话题标题" name="title" value="{{ topic.title }}">
+            </div>
+            <div class="col-sm-2 padding-left-0">
+                <select name="area" class="form-control">
+                    {% get_area topic.area_id.id %}
+                </select>
+            </div>
+            <div class="col-sm-3 padding-left-0">
+                <input type="text" placeholder="话题标签,多标签以空格隔开." class="form-control"
+                       name="tags" value="{% for tag in topic.tags.all %}{{ tag.tag_id.name }}&nbsp;{% endfor %}">
+            </div>
+        </div>
+        <div class="modal-body">
+            <h3 class="margin-top-0">话题内容:</h3>
+            <textarea name="content" id="textarea_modify" cols="30" rows="10"
+                      class="textarea">{{ topic.content }}</textarea>
+        </div>
+        <div class="modal-footer">
+            <button>提交</button>
+        </div>
+    </form>
+{% endblock %}

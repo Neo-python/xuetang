@@ -1,0 +1,22 @@
+{#所需参数,page:当前页数.topics:当前页内容集合,由paginator.page(page)生成.page_list:当前页page范围.#}
+<div class="center">
+
+    {% if page_list|length > 1 %}
+        <ul class="pagination">
+            {% if topics.has_previous %}
+                <li><a href="?{% if args %}{{ args }}&{% endif %}page={{ topics.previous_page_number }}">上一页</a></li>
+            {% endif %}
+            {% for i in page_list %}
+                {% if page == i %}
+                    <li><a href="#" class="P-active">{{ i }}</a></li>
+                {% else %}
+                    <li><a href="?{% if args %}{{ args }}&{% endif %}page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if topics.has_next %}
+                <li><a href="?{% if args %}{{ args }}&{% endif %}page={{ topics.next_page_number }}">下一页</a></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+</div>

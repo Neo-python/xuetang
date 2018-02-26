@@ -1,0 +1,116 @@
+{% extends 'audit/index.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+{% endblock %}
+{% block body %}
+    <div style="display: flex">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#false">
+                        待审核标签
+                    </a>
+                </h4>
+            </div>
+            <div id="false" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>图标</th>
+                            <th>标签名</th>
+                            <th>描述</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if tagsF %}
+                            {% for tag in tagsF %}
+                                <tr>
+                                    <td><img src="{{ tag.icon }}" alt="{{ tag.name }}"></td>
+                                    <td>{{ tag.name }}</td>
+                                    <td>{{ tag.description }}</td>
+                                    <td>{{ tag.create_time|date:'Y-m-d' }}</td>
+                                    <td>
+                                        <button class="btn btn-success audit-btn" data-id="{{ tag.id }}"
+                                                data-value="True" data-type="status"> 审核通过
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#true">
+                        已审核标签
+                    </a>
+                </h4>
+            </div>
+            <div id="true" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>图标</th>
+                            <th>标签名</th>
+                            <th>描述</th>
+                            <th>关注</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if tagsT %}
+                            {% for tag in tagsT %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ tag.icon }}" alt="{{ tag.name }}">
+                                    </td>
+                                    <td>{{ tag.name }}</td>
+                                    <td>
+                                        {{ tag.description }}
+                                    </td>
+                                    <td>{{ tag.attention }}</td>
+                                    <td>{{ tag.create_time|date:'Y-m-d' }}</td>
+                                    <td>
+                                        <button class="btn btn-success audit-btn" data-id="{{ tag.id }}"
+                                                data-value="False" data-type="status"> 关闭
+                                        </button>
+                                        <button class="btn btn-primary modify" data-id="{{ tag.id }}"
+                                                data-name="{{ tag.name }}">修改
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div style="position: absolute;left: -1000px;width: 100px" id="form-div">
+            <form action="{% url 'audit:tag_modify' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="tag_id" id="tag_id" hidden>
+                <span>标签名:<span id="tag_name" style="font-weight: bold"></span></span><br>
+                <label for="icon">图标<input type="file" id="icon" name="icon">
+                    <input type="text" placeholder="使用url地址,默认值:default" name="icon_url">
+                </label>
+                <label for="description">描述 <textarea name="description" id="description" cols="30" rows="3"></textarea>
+                </label>
+                <input type="submit" value="提交修改" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/audit/tag.js' %}"></script>
+{% endblock %}

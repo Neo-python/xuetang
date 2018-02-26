@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html,body{
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .div{
+            height: 200px;
+            width: 200px;
+            background: red;
+            position: absolute;
+            right: 0;
+            bottom: -200px;
+            transition:all 2s;
+        }
+
+        .hover{
+            bottom: 200px;
+        }
+    </style>
+</head>
+<body>
+    <button>
+        点我
+    </button>
+    <div class="div">
+        点我关闭
+    </div>
+    <button>
+        点我
+    </button>
+    <div class="div">
+        点我关闭
+    </div>
+</body>
+<script>
+        var button = document.getElementsByTagName('button')[0];
+        var div = document.getElementsByClassName('div')[0];
+        button.onclick = function(){
+            div.className = 'div hover'
+        }
+        div.onclick = function(){
+            div.className = 'div'
+        }
+
+    </script>
+</html>
