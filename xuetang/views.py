@@ -22,7 +22,7 @@ def upload(request):
     """
     to_day = datetime.datetime.now().strftime('%Y-%m-%d')
     path = (IMG_DIRS + 'upload/' + to_day).replace('\\', '/')
-    print(path)
+    print(path )
     is_path = os.path.exists(IMG_DIRS + 'upload/' + to_day)
     print(IMG_DIRS + 'upload/' + to_day)
     if is_path:
