@@ -191,7 +191,7 @@ def save_img(file, filename=None, folder=None):
     return {'path': path, 'src': src}
 
 
-def send_mail(smtp_server='smtp.163.com', from_addr='g602049338@163.com', from_name='python学堂', password='sqm110120',
+def send_mail(smtp_server='smtp.163.com', from_addr='g602049338@163.com', from_name='python学堂', password='xxxxxx',
               to_addr='602049338@qq.com', message=None, header='python学堂发来的邮件'):
     def _format_addr(s):
         name, addr = parseaddr(s)
