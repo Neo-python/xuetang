@@ -21,16 +21,8 @@ def upload(request):
     :return:
     """
     to_day = datetime.datetime.now().strftime('%Y-%m-%d')
-    path = (IMG_DIRS + 'upload/' + to_day).replace('\\', '/')
-    print(path)
-    is_path = os.path.exists(IMG_DIRS + 'upload/' + to_day)
-    print(IMG_DIRS + 'upload/' + to_day)
-    if is_path:
-        print('ok')
-    else:
-        print('no')
     file = request.FILES.get('upload')
-    src = save_img(file, 'xxx.jpg').get('src')
+    src = save_img(file, folder='upload/' + to_day).get('src')
     return JsonResponse({'src': src})
 
 

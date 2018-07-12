@@ -1,19 +1,19 @@
 # 插件函数库
+import os
+import datetime
+import smtplib
+import time
+import random
+from functools import wraps
 from xuetang.settings import IMG_DIRS, SYMBOL_NUMBER
 from django.http import Http404
 from random import randint
 from PIL import Image, ImageDraw, ImageFont
 from xuetang.settings import VERIRICATION_CODE_DIRS
-import os
-import datetime
 from user.models.model import Defense, User, VerificationCode
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 from email.header import Header
-import smtplib
-import time
-from functools import wraps
-import random
 
 
 def fn_timer(func):
@@ -176,19 +176,28 @@ def save_img(file, filename=None, folder=None):
     """
     if not filename:
         filename = file.__str__()
+
     if folder:
         path = IMG_DIRS + folder + "/"
         src = '/static/img/' + folder + "/"
     else:
         path = IMG_DIRS + 'upload/'
         src = '/static/img/' + 'upload/'
-    path += filename
-    src += filename
-    with open(path, 'wb') as f:
-        for i in file:
-            f.write(i)
-        f.close()
-    return {'path': path, 'src': src}
+
+    path = path.replace('\\', '/')  # 纠正路径 \\ -> /
+
+    if check_path(path=path, create=True):  # 检测或直接创建路径
+        path += filename
+        src += filename
+
+        with open(path, 'wb') as f:  # 创建文件写入内容进文件
+            for i in file:
+                f.write(i)
+            f.close()
+
+        return {'path': path, 'src': src}
+    else:
+        raise Exception('path does not exits and cannot be create!')
 
 
 def send_mail(smtp_server='smtp.163.com', from_addr='g602049338@163.com', from_name='python学堂', password='xxxxxx',
@@ -249,3 +258,24 @@ def generate_code(user, length=6):
     else:
         VerificationCode(user=user, code=code).save()
     return code
+
+
+def check_path(path: str, create: bool = False) -> bool:
+    """检查路径是否存在
+    :param path: 被检查的路径
+    :param create: 当路径不存在时,是否创建路径
+    :return: 检测结果
+    """
+    if os.path.exists(path=path):  # 检测到路径存在,直接返回True.
+        return True
+    else:  # 如果创建成功,返回True, 否则都返回False.
+        if create:
+            try:
+                os.makedirs(path)  # 尝试创建路径
+            except OSError as err:
+                print(err)
+                return False
+            else:
+                return True  # 创建成功 == 路径存在, 返回True.
+        else:
+            return False
