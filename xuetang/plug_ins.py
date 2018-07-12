@@ -14,6 +14,7 @@ from user.models.model import Defense, User, VerificationCode
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 from email.header import Header
+import xuetang.config as config
 
 
 def fn_timer(func):
@@ -200,7 +201,8 @@ def save_img(file, filename=None, folder=None):
         raise Exception('path does not exits and cannot be create!')
 
 
-def send_mail(smtp_server='smtp.163.com', from_addr='g602049338@163.com', from_name='python学堂', password='xxxxxx',
+def send_mail(smtp_server='smtp.163.com', from_addr='g602049338@163.com', from_name='python学堂',
+              password=config.EMAIL_PASSWORD,
               to_addr='602049338@qq.com', message=None, header='python学堂发来的邮件'):
     def _format_addr(s):
         name, addr = parseaddr(s)
