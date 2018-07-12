@@ -8,11 +8,8 @@ from xuetang.plug_ins import save_img
 # Create your views here.
 
 def index(request):
-    """
-    审核管理首页,
+    """审核管理首页,
     呈现各类待审核项目条数
-    :param request:
-    :return:
     """
     content = {
         'title': '审核管理',
@@ -20,47 +17,49 @@ def index(request):
     return render(request, template_name='audit/index.html', context=content)
 
 
-def topic(request):
-    """
-    话题审核页
-    :param request:
-    :return:
-    """
-    content = {
-        'title': '话题审核',
-        'topics': Topic.objects.filter(status=False, delete_status=False).all()
-    }
-    return render(request, template_name='audit/topic.html', context=content)
+"""用户审核"""
 
 
-def comment(request):
-    """
-    评论审核页
-    :param request:
-    :return:
-    """
+def user(request):
+    """用户审核页"""
+
     content = {
-        'title': '评论审核',
-        'comments': Comment.objects.filter(status=False, delete_status=False).order_by('-time').all()
+        'title': '用户审核',
+        'users': User.objects.filter(status=False).order_by('-create_time').all()
     }
-    return render(request, template_name='audit/comment.html', context=content)
+
+    return render(request, template_name='audit/user.html', context=content)
+
+
+def audit_user(request) -> JsonResponse:
+    """用户审核通过处理"""
+    user_id = request.POST.get('user_id')
+    try:
+        User.objects.filter(id=user_id, status=False).update(status=True)
+    except BaseException as err:
+        print(err)
+    return JsonResponse({'status': 'ok'})
+
+
+"""标签审核"""
 
 
 def tag(request):
+    """标签审核页"""
+
     content = {
         'title': '标签管理',
-        'tagsF': Tag.objects.filter(status=False).order_by('-create_time').all(),
-        'tagsT': Tag.objects.filter(status=True).all()
+        'tagsF': Tag.objects.filter(status=False).order_by('-create_time').all(),  # 未审核
+        'tagsT': Tag.objects.filter(status=True).all()  # 已审核
     }
     return render(request, template_name='audit/tag.html', context=content)
 
 
 def tag_modify(request):
-    """
-    修改标签图标与描述,名称不允许修改.
-    :param request:
+    """修改标签图标与描述,名称不允许修改.
     :return: 回到标签审核界面
     """
+
     tag_id = request.POST.get('tag_id')
     t = Tag.objects.filter(id=tag_id).first()
     url = request.POST.get('icon_url')
@@ -83,12 +82,32 @@ def tag_modify(request):
     return HttpResponseRedirect(reverse('audit:tag'))
 
 
-def process(request):
-    """
-    处理话题与评论审核的请求视图
-    :param request:
-    :return:
-    """
+"""话题与评论审核"""
+
+
+def topic(request):
+    """话题审核页"""
+
+    content = {
+        'title': '话题审核',
+        'topics': Topic.objects.filter(status=False, delete_status=False).all()
+    }
+    return render(request, template_name='audit/topic.html', context=content)
+
+
+def comment(request):
+    """评论审核页"""
+
+    content = {
+        'title': '评论审核',
+        'comments': Comment.objects.filter(status=False, delete_status=False).order_by('-time').all()
+    }
+    return render(request, template_name='audit/comment.html', context=content)
+
+
+def process(request) -> JsonResponse:  # process:处理
+    """处理话题与评论审核的请求视图"""
+
     request_get = request.GET.get
     #  main_id:表主键id model:模型对象 process_type:操作字段,(status,delete_status,audit_message). message:留言信息
     main_id = request_get('main_id')
@@ -114,13 +133,10 @@ def process(request):
     return JsonResponse({'status': 'ok'})
 
 
-def audit_message(request):
-    """
-    审核留言
-    用户帐号不应该暴露在前台,所以to_user_id通过对象id查询到User.user再存入Message.
-    :param request:
-    :return:
-    """
+def audit_message(request) -> JsonResponse:
+    """审核留言
+    用户帐号不应该暴露在前台,所以to_user_id通过对象id查询到User.user再存入Message."""
+
     request_post = request.POST.get
     kw = {
         'types': request_post('types'),

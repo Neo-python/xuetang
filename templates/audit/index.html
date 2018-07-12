@@ -26,6 +26,7 @@
                             class="badge">{% audit_count 'comment' None %}</span></a></li>
                     <li><a href="{% url 'audit:tag' %}">标签审核 <span
                             class="badge">{% audit_count 'tag' 'delete_status' %}</span></a></li>
+                    <li><a href="{% url 'audit:user' %}">用户审核<span class="badge">{% audit_count 'user' 'delete_status' %}</span></a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             其他
