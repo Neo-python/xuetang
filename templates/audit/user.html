@@ -1,0 +1,43 @@
+{% extends 'audit/index.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block resources %}
+    <link rel="stylesheet" href="{% static 'css/audit/comment.css' %}">
+{% endblock %}
+{% block body %}
+    <div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="width: 10%">用户</th>
+                <th style="width: 7%">时间</th>
+                <th style="width: 10%">操作</th>
+                <th>内容</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if users %}
+                {% for user in users %}
+                    <tr id="comment{{ user.id }}">
+                        <td>{{ user.nickname }}</td>
+
+                        <td>{{ user.create_time|date:'Y-m-d' }}</td>
+                        <td>
+                            <button class="btn btn-success audit-btn" data-id="{{ user.id }}" data-value="True"
+                                    data-type="status">
+                                审核通过
+                            </button>
+                            <button class="btn btn-primary leaveAMessage-btn" data-id="{{ user.id }}"
+                                    data-to_user="{{ user.id }}">留言
+                            </button>
+                            <input type="text" id="{{ user.id }}">
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <input type="text" hidden value="{{ csrf_token }}" id="csrf_token">
+    <script src="{% static 'js/audit/user.js' %}"></script>
+{% endblock %}
