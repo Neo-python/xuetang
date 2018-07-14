@@ -12,8 +12,7 @@ from functools import reduce
 
 
 def release(request):
-    """
-    发布话题
+    """发布话题
     :param request:
     :return:返回发布话题所在页面,未完成.返回发布结果信息.未完成
     """
@@ -29,8 +28,7 @@ def release(request):
 
 
 def modify(request):
-    """
-    话题编辑页面与处理编辑内容
+    """话题编辑页面与处理编辑内容
     :param request:
     :return: GET返回编辑页面,POST返回话题讨论页.
     """
@@ -52,8 +50,7 @@ def modify(request):
 
 
 def topic_index(request, area):
-    """
-    话题分区视图.
+    """话题分区视图.
     :param request:
     :param area: 分区代号,作为筛选话题的主要条件之一.与前台sort分类标识
     :return: 话题列表
@@ -79,8 +76,7 @@ def topic_index(request, area):
 
 
 def search_topic(request):
-    """
-    搜索视图
+    """搜索视图
     不支持tag与question双参数同时搜索.
     收集tag\question\page url参数,
     args为当前搜索内容记录,在分页导航中传入args内容.
@@ -140,16 +136,17 @@ def search_topic(request):
 
 
 def discuss(request, topic_id):
-    """
-    话题讨论页面
+    """话题讨论页面
     :param request:
     :param topic_id: 话题id
     :return: 返回话题内容页面
     """
     page = int(request.GET.get('page', 1))
     topic = Topic.status_true.filter(id=topic_id).first()
+
     comments = topic.comments.filter(status=True, reply_obj_id=None).all()
     comments, paginator, page_list = get_paginator(page, comments, per_page=20)
+
     contents = {
         'title': topic.title,
         'area': topic.area_id.path_name,
@@ -163,8 +160,7 @@ def discuss(request, topic_id):
 
 
 def comment(request, topic_id):
-    """
-    处理评论请求
+    """处理评论请求
     :param request:
     :param topic_id: 话题id,定位评论与话题关系
     :return: 当请求属于reply回复评论时,返回状态信息等...当请求属于评论时,跳转至话题页面,并携带message信息.
@@ -198,8 +194,7 @@ def comment(request, topic_id):
 
 
 def get_reply(request):
-    """
-    获取指定评论对象,得到回复数据,以json格式返回给前台,由前台渲染呈现.
+    """获取指定评论对象,得到回复数据,以json格式返回给前台,由前台渲染呈现.
     :param request:
     :return: 返回状态码,replys:回复集合. replys是由n个{user:xx, content:xx}组成的列表
     """
@@ -220,8 +215,7 @@ def get_reply(request):
 
 
 def collection(request):
-    """
-    收藏话题请求\处理,视图.
+    """收藏话题请求\处理,视图.
     如果用户当前未登录,直接返回failure状态码,如果已登录,再继续做判断.
     :param request:
     :return: 状态码与相应提示信息通知
@@ -244,8 +238,7 @@ def collection(request):
 
 
 def comment_loc(request):
-    """
-    comment like or contra 关系处理视图
+    """comment like or contra 关系处理视图
     :param request:
     :return:
     """
@@ -259,8 +252,7 @@ def comment_loc(request):
 
 
 def topic_loc(request):
-    """
-    话题like or contra 关系处理视图
+    """话题like or contra 关系处理视图
     从modify_loc获取关系 +- 动作结果,修改话题相关字段值
     :param request: 成功返回关系结果,否则返回404状态,前端不执行后续js操作
     :return:
