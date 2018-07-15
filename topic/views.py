@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse, Http404
 from django.http import JsonResponse
+from django.template import loader
 from .plug_ins import sort_out_tag, save_topic, get_topic, modify_loc, get_paginator
 from .models import Area, Topic, Comment, Collection, Tag
 from django.db.models import Q
