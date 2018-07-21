@@ -131,6 +131,4 @@ IMG_DIRS = os.path.join(BASE_DIR, 'static\\img\\')
 
 TINYMCE_JS_URL = "/static/js/tinymce/timymce.min.js"
 
-DOMAIN_NAME = 'http://127.0.0.1:8000'
-
 SYMBOL_NUMBER = {58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96}  # 符号ascii表,a-Z之间的符号代码
