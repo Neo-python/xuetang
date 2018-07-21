@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, Http404, HttpResponseRedirect
 from django.http import JsonResponse
 from django.db.models import Count
-from xuetang.settings import DOMAIN_NAME
+from xuetang.config import DOMAIN_NAME
 from xuetang.views import get_verification
 from xuetang.plug_ins import ip_defense, get_user, judgment_code, send_mail, generate_code, save_img
 from .plug_ins import verify_login, verification_field, write_cookie, is_self
@@ -9,7 +9,6 @@ from topic.plug_ins import get_paginator
 from .models.form import UserForm, LoginForm
 from .models.model import Defense, User, Cookie, Message
 from topic.models.model import Topic
-import datetime
 
 
 # Create your views here.
