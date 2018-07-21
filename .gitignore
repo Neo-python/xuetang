@@ -1,0 +1,17 @@
+venv/
+static/
+.idea/
+.idea/dataSources.xml
+.idea/dataSources/6ec8d2e9-6ee9-4ffa-9e2d-07367a817f5f.xml
+__MACOSX/._static
+audit/__pycache__/
+audit/*/*.pyc
+audit/*/*/*.pyc
+topic/__pycache__/
+topic/*/*.pyc
+topic/*/*/*.pyc
+user/*/*.pyc
+user/*/*/*.pyc
+xuetang/*/*.pyc
+xuetang/*/*/*.pyc
+xuetang/config.py
