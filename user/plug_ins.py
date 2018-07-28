@@ -1,13 +1,10 @@
 from hashlib import sha1
-from .models.model import User, Cookie, VerificationCode
-from xuetang.plug_ins import fn_timer
+from .models.model import User, Cookie
 import datetime
 
 
-
 def verify_login(request, user, password):
-    """
-    验证帐号,将账号信息写入session['user]
+    """验证帐号,将账号信息写入session['user]
     :param request:
     :param user:
     :param password:
@@ -29,8 +26,7 @@ def verify_login(request, user, password):
 
 
 def verification_field(model, unique_field, form, error):
-    """
-    排查选定字段,判断唯一性.返回错误字段信息.
+    """排查选定字段,判断唯一性.返回错误字段信息.
     :param model: 查询的模型
     :param unique_field: 需要排查唯一性的字段
     :param form: 用户提交的数据
@@ -54,8 +50,7 @@ def verification_field(model, unique_field, form, error):
 
 
 def write_cookie(user):
-    """
-    写入cookie到数据库.
+    """写入cookie到数据库.
     :param user: 用户登录帐号与当前时间相连后再加密
     :return:返回sid 供写入cookie使用
     """
@@ -76,5 +71,3 @@ def is_self(request, user):
         return True
     self_user = self.get('user')
     return self_user == user.user
-
-

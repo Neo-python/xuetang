@@ -1,13 +1,10 @@
-from .models.model import Tag, Topic, TopicAndTag, Area, TopicLOC, CommentLOC
+from .models.model import Tag, Topic, TopicAndTag, TopicLOC, CommentLOC
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.http import JsonResponse
-import datetime
 
 
 def sort_out_tag(topic, tags):
-    """
-    写入标签  |  写入标签与话题关系
+    """写入标签  |  写入标签与话题关系
     :param topic: 话题对象
     :param tags: 标签列表[a, b, c]
     :return:
@@ -31,8 +28,7 @@ def sort_out_tag(topic, tags):
 
 
 def save_topic(request, topic=None):
-    """
-    整理数据,写入数据库.
+    """整理数据,写入数据库.
     未注册用户所发布的话题将以管理员审核帐号写入数据库.显示状态为False
     :param request:
     :return:返回topic对象,写入标签时需要.
@@ -59,8 +55,7 @@ def save_topic(request, topic=None):
 
 
 def get_topic(request, kw={}, Q_obj=Q(id__gt=0)):
-    """
-    获取参数,查询.
+    """获取参数,查询.
     没有参数,做基本查询
     :param request:
     :param Q_obj:默认Q对象,设置为id大于0的条件,不影响正常filter过滤.id一定大于0
@@ -86,8 +81,7 @@ def get_topic(request, kw={}, Q_obj=Q(id__gt=0)):
 
 
 def get_paginator(page, topics, per_page=10):
-    """
-    获取话题分页.
+    """获取话题分页.
     :param page:请求的页面
     :param topics: 符合条件的话题集合
     :param per_page: 每页话题数
@@ -108,8 +102,7 @@ def get_paginator(page, topics, per_page=10):
 
 
 def modify_loc(request, model):
-    """
-    修改话题或评论关系状态,话题与评论关系视图内有较多相同的操作,所以把两个视图内交叉的部分拿出来在这个函数内处理
+    """修改话题或评论关系状态,话题与评论关系视图内有较多相同的操作,所以把两个视图内交叉的部分拿出来在这个函数内处理
     :param request:
     :param model: 模式:'comment'或'topic'
     :return:
@@ -182,8 +175,7 @@ def modify_loc(request, model):
 
 
 def get_page(page, page_list):
-    """
-    以当前页为中心,生成:分页导航页数列表[p-2, p-1, p, p+1, p+2]
+    """以当前页为中心,生成:分页导航页数列表[p-2, p-1, p, p+1, p+2]
     :param page:
     :param page_list:
     :return:

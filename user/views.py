@@ -14,8 +14,7 @@ from topic.models.model import Topic
 # Create your views here.
 
 def login(request):
-    """
-    接收登录请求,验证.
+    """接收登录请求,验证.
     登录成功:将用户信息写入session.
             用户勾选remember则生成cookie:sid信息返回前台,在前台完成cookie写入.
     失败:通知前台,登录失败.
@@ -40,8 +39,7 @@ def login(request):
 
 
 def logout(request):
-    """
-    用户登出,删除session,删除cookie
+    """用户登出,删除session,删除cookie
     :param request:
     :return: 跳转到不需要登录状态的首页
     """
@@ -56,8 +54,7 @@ def logout(request):
 
 @ip_defense(refresh_hour=24, frequency=30)
 def registered(request):
-    """
-    验证注册表单,不符合条件则收集错误信息,反馈给前台用户.
+    """验证注册表单,不符合条件则收集错误信息,反馈给前台用户.
     每次注册,修改ip_defense各项数值.超过一定数值,则不再继续处理注册请求.
     :param request:
     :return: 注册成功,更新session,跳转页面. 注册失败,更新验证码,返回json数据.
@@ -115,8 +112,7 @@ def registered(request):
 
 
 def user_index(request, user_nickname):
-    """
-    用户个人主页
+    """用户个人主页
     :param request:
     :param user_nickname:
     :return:
@@ -151,8 +147,7 @@ def user_index(request, user_nickname):
 
 
 def settings(request):
-    """
-    个人帐号设置界面
+    """个人帐号设置界面
     :param request:
     :return:
     """
@@ -165,8 +160,7 @@ def settings(request):
 
 
 def bind_email(request):
-    """
-    绑定邮箱
+    """绑定邮箱
     message:前台提示绑定结果信息.
     :param request:
     :return:
@@ -194,10 +188,8 @@ def bind_email(request):
 
 
 def modify_password(request):
-    """
-    修改密码,需要登入权限
+    """修改密码,需要登入权限
     :param request:
-    :return:
     """
     # 获取用户实例
     user = get_user(request)
@@ -223,10 +215,8 @@ def modify_password(request):
 
 
 def modify_personal_information(request):
-    """
-    修改个人信息:头像与签名.
+    """修改个人信息:头像与签名.
     :param request:
-    :return:
     """
     user = get_user(request)
     file = request.FILES.get('avatar')
@@ -242,14 +232,14 @@ def modify_personal_information(request):
         signature = request.POST.get('signature', '')
         user.signature = signature
         user.save()
-    except:
+    except BaseException as err:
+        print(err)
         raise Http404('签名过长,最大长度为48个字符.')
     return HttpResponseRedirect(reverse('user:settings'))
 
 
 def application_reset_password(request):
-    """
-    申请重置密码界面与发送唯一验证码code.
+    """申请重置密码界面与发送唯一验证码code.
     :param request:
     :return:
     """
@@ -277,8 +267,7 @@ def application_reset_password(request):
 
 
 def reset_password(request, code):
-    """
-    重置密码界面与修改密码操作.
+    """重置密码界面与修改密码操作.
     :param request:
     :param code: 唯一验证码,有效期5分钟.
     :return:
@@ -316,8 +305,7 @@ def reset_password(request, code):
 
 
 def leave_message(request):
-    """
-    接收留言请求视图, 此视图需要登入权限装饰器.
+    """接收留言请求视图, 此视图需要登入权限装饰器.
     :param request:
     :return:
     """
@@ -342,8 +330,7 @@ def leave_message(request):
 
 
 def mailbox(request):
-    """
-    获取聊天记录与未读消息数量,不要具体内容.
+    """获取聊天记录与未读消息数量,不要具体内容.
     :param request:
     :return: 信箱页
     """
@@ -359,8 +346,7 @@ def mailbox(request):
 
 
 def get_message(request):
-    """
-    按需,获取对话记录.
+    """按需,获取对话记录.
     other_side: 对方.
     :param request:
     :return:返回状态码\对话集\下次请求数
@@ -399,8 +385,7 @@ def get_message(request):
 
 
 def del_message(request):
-    """
-    修改删除状态为True,因为记录是双向的,所以以此方法做消息删除.
+    """修改删除状态为True,因为记录是双向的,所以以此方法做消息删除.
     :param request:
     :return:
     """

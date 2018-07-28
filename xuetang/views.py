@@ -15,8 +15,7 @@ def home(request):
 
 
 def upload(request):
-    """
-    按日期分文件夹,避免所有图片挤在一起产生冲突,未完成.
+    """按日期分文件夹,避免所有图片挤在一起产生冲突,未完成.
     :param request:
     :return:
     """
@@ -27,8 +26,7 @@ def upload(request):
 
 
 def get_verification(request):
-    """
-    获取验证码,将验证码存于request.session中方便其他视图使用
+    """获取验证码,将验证码存于request.session中方便其他视图使用
     :param request:
     :return:验证码图片的src地址
     """
@@ -39,8 +37,7 @@ def get_verification(request):
 
 
 def send_code(request):
-    """
-    视图需要登入权限
+    """视图需要登入权限
     发送code到用户邮箱.
     :param request:
     :return:
