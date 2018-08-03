@@ -215,9 +215,8 @@ def modify_password(request):
 
 
 def modify_personal_information(request):
-    """修改个人信息:头像与签名.
-    :param request:
-    """
+    """修改个人信息:头像与签名."""
+
     user = get_user(request)
     file = request.FILES.get('avatar')
     # 如果存在file,and表达式才会继续判断.先判断尺寸是否大于2M再判断后缀是否合法.

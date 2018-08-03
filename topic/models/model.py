@@ -5,8 +5,7 @@ from tinymce.models import HTMLField
 
 
 def upload_to_area(instance, filename):
-    """
-    生成唯一路径,返回路径.
+    """生成唯一路径,返回路径.
     :param instance:
     :param filename:
     :return:
@@ -15,8 +14,7 @@ def upload_to_area(instance, filename):
 
 
 class Area(models.Model):
-    """
-    板块分区模型
+    """板块分区模型
     """
     name = models.CharField(verbose_name='分区名', max_length=10, unique=True)
     path_name = models.CharField('url路径名', max_length=10, unique=True)
@@ -36,8 +34,7 @@ class TopicStatus(models.Manager):
 
 
 class Topic(models.Model):
-    """
-    话题模型
+    """话题模型
     """
     title = models.CharField(verbose_name='话题标题', max_length=50)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, to_field='user', verbose_name='用户',
@@ -63,8 +60,7 @@ class Topic(models.Model):
 
 
 class Tag(models.Model):
-    """
-    标签模型
+    """标签模型
     """
     name = models.CharField(verbose_name='标签名', max_length=20)
     icon = models.FileField(
@@ -79,8 +75,7 @@ class Tag(models.Model):
 
 
 class TopicAndTag(models.Model):
-    """
-    话题与标签关系模型
+    """话题与标签关系模型
     """
     topic_id = models.ForeignKey(
         to=Topic, on_delete=models.CASCADE, related_name='tags', verbose_name='话题')
@@ -89,8 +84,7 @@ class TopicAndTag(models.Model):
 
 
 class Comment(models.Model):
-    """
-    评论模型
+    """评论模型
     """
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, to_field='user', related_name='comments',
                              verbose_name='用户')
@@ -109,8 +103,7 @@ class Comment(models.Model):
 
 
 class TouristsComment(models.Model):
-    """
-    游客评论待审核模型
+    """游客评论待审核模型
     """
     topic_id = models.ForeignKey(to=Topic, on_delete=models.CASCADE, related_name='incognito_comment',
                                  verbose_name='话题')
@@ -123,9 +116,8 @@ class TouristsComment(models.Model):
 
 
 class TopicLOC(models.Model):
-    """
-    话题点赞模型
-    """
+    """话题点赞模型"""
+
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, to_field='user', related_name='like_or_contra',
                              verbose_name='用户')
     topic_id = models.ForeignKey(
@@ -137,13 +129,12 @@ class TopicLOC(models.Model):
 
 
 class CommentLOC(models.Model):
-    """
-    comment Like or contra 评论点赞或反对模型
-    """
+    """comment Like or contra 评论点赞或反对模型"""
+
     cid = models.ForeignKey(
-        to=Comment, on_delete=models.CASCADE, related_name='LOC')
+        to=Comment, on_delete=models.CASCADE, related_name='LOC')  # 评论id
     user = models.ForeignKey(
-        to=User, on_delete=models.CASCADE, to_field='user', related_name='commentLOC')
+        to=User, on_delete=models.CASCADE, to_field='user', related_name='commentLOC')  # 用户
     status = models.NullBooleanField(verbose_name='赞或反对', null=True)
 
     def __str__(self):
@@ -151,9 +142,8 @@ class CommentLOC(models.Model):
 
 
 class Collection(models.Model):
-    """
-    收藏模型
-    """
+    """收藏模型"""
+
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, to_field='user', related_name='collections',
                              verbose_name='用户')
     topic_id = models.ForeignKey(

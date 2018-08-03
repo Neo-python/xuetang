@@ -43,6 +43,7 @@ def send_code(request):
     :return:
     """
     user = get_user(request)
+
     # 如果用户已绑定邮箱,则接受信息邮箱为用户已绑定邮箱,行为名称由前台指定.
     if user.email:
         email = user.email
