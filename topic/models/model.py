@@ -34,8 +34,8 @@ class TopicStatus(models.Manager):
 
 
 class Topic(models.Model):
-    """话题模型
-    """
+    """话题模型"""
+
     title = models.CharField(verbose_name='话题标题', max_length=50)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, to_field='user', verbose_name='用户',
                              default='AdminAudit')
@@ -54,6 +54,20 @@ class Topic(models.Model):
 
     objects = models.Manager()
     status_true = TopicStatus()
+
+    def __init__(self, *args, **kwargs):  # 改写基类初始化方法
+        super(Topic, self).__init__(*args, **kwargs)  # 继承基类方法
+        self.adoption_status_value = None  # 添加默认属性
+
+    @property  # 将方法伪装成属性
+    def adoption_status(self):
+        """检查话题是否存在被采纳评论"""
+        adoption_status_value = getattr(self, 'adoption_status_value', None)
+        if adoption_status_value:
+            return adoption_status_value
+        else:
+            self.adoption_status_value = self.comments.filter(adoption=True).values('id').first()  # 只查询状态 减少返回数据
+            return self.adoption_status_value  # 保存状态,只查询一次.
 
     def __str__(self):
         return f'{self.title[:10]}... -- {self.user.user} -- {self.status}'

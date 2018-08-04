@@ -54,7 +54,12 @@
                                              class="comment_avatar"
                                              style="display: inline-block">
                                         <span class="font-bold">{{ foo.user.nickname }}</span>
-                                        <span class="margin-lf5 color-gray float-right">{{ foo.time | date:'Y-m-d' }}</span>
+                                        <span class="margin-lf5 color-gray float-right">
+                                            {{ foo.time | date:'Y-m-d' }}
+                                            {% if topic.adoption_status.id == foo.id %}
+                                            <span class="badge background-green">被采纳</span>
+                                            {% endif %}
+                                        </span>
                                     </div>
                                     <div>{{ foo.content |safe }}</div>
                                 </span>
@@ -78,22 +83,18 @@
                                             <button class="menu-btn color-gray1 margin-left24 fa-hover"><i
                                                     class="fa fa-flag"></i>&nbsp;举报
                                             </button>
-                                            {% ifequal USER.user topic.user.user %}
+                                            {% if USER.user == topic.user.user and topic.adoption_status is None %}
                                                 <button class="menu-btn color-gray1 margin-left24 fa-hover adoption-btn"
                                                         data-id="{{ foo.id }}"><i
                                                         class="fa fa-check"></i>&nbsp;采纳
                                                 </button>
-                                            {% endifequal %}
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="row collapse" id="comment-{{ foo.id }}">
                                         <div class="margin-left24 margin-r15 reply-div"><span></span><span></span></div>
                                         <div id="reply-{{ foo.id }}">
                                             {% if USER %}
-
-                                                {#                                                {% if comments %}#}
-                                                {##}
-                                                {#                                                {% endif %}#}
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" id="reply{{ foo.id }}">
                                                 </div>

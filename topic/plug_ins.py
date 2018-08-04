@@ -1,4 +1,4 @@
-from .models.model import Tag, Topic, TopicAndTag, TopicLOC, CommentLOC
+from .models.model import Tag, Topic, TopicAndTag, TopicLOC, CommentLOC, Comment
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
@@ -54,7 +54,7 @@ def save_topic(request, topic=None):
     return topic
 
 
-def get_topic(request, kw={}, Q_obj=Q(id__gt=0)):
+def get_topic(request, kw=None, Q_obj=Q(id__gt=0)):
     """获取参数,查询.
     没有参数,做基本查询
     :param request:
@@ -62,6 +62,8 @@ def get_topic(request, kw={}, Q_obj=Q(id__gt=0)):
     :param kw: filter参数
     :return: 查询结果对象集合
     """
+    if kw is None:
+        kw = {}
     # 获取查询排序,与分区信息
     sort = request.GET.dict().get('sort', None)
     # 设置基本查询所需的基本参数
@@ -196,3 +198,19 @@ def get_page(page, page_list):
         return list(page_list[page - left:page + right])
     else:
         return list(range(1, length + 1))
+
+
+def adoption_review(topic_id: str or int, user_user: str) -> bool:
+    """采纳评论前的验证工作
+    :param topic_id: 话题id
+    :param user_user: 当前登录的用户
+    :return: True of False
+    """
+
+    if Comment.objects.filter(topic_id=topic_id, adoption=True).first():
+        return False  # 查询是否有已被采纳的评论(正常情况:在话题已有被采纳的评论情况下,采纳接口是隐藏的.)
+
+    if not Topic.objects.filter(id=topic_id, user=user_user).first():  # 查询话题归属者是否是当前用户,非话题归属者无权限采纳
+        return False
+
+    return True  # 验证通过

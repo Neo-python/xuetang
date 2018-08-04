@@ -1,11 +1,11 @@
+import operator
+from functools import reduce
 from django.shortcuts import render, HttpResponseRedirect, reverse, Http404
 from django.http import JsonResponse
-from .plug_ins import sort_out_tag, save_topic, get_topic, modify_loc, get_paginator
+from topic.plug_ins import sort_out_tag, save_topic, get_topic, modify_loc, get_paginator, adoption_review
 from .models import Area, Topic, Comment, Collection, Tag
 from django.db.models import Q
 from xuetang.plug_ins import get_user
-import operator
-from functools import reduce
 
 
 # Create your views here.
@@ -144,8 +144,14 @@ def discuss(request, topic_id):
     page = int(request.GET.get('page', 1))
     topic = Topic.status_true.filter(id=topic_id).first()
 
-    comments = topic.comments.filter(status=True, reply_obj_id=None).all()
+    comments = topic.comments.filter(status=True, reply_obj_id=None, adoption=False).all()
     comments, paginator, page_list = get_paginator(page, comments, per_page=20)
+
+    if page == 1:  # 第一页 需要展示被采纳的评论
+        adoption_ = topic.comments.filter(status=True, adoption=True).first()  # 查找被采纳的评论
+        if adoption_:  # 当被采纳的评论存在时
+            comments = list(comments)  # 列表化评论集合
+            comments.insert(0, adoption_)  # 插入评论
 
     contents = {
         'title': topic.title,
@@ -277,6 +283,17 @@ def adoption(request):
     comment_id = request.POST.get('comment_id')
     user_info = request.session.get('user')
 
-    comment_obj = Comment.objects.filter(topic_id=topic_id, id=comment_id, user=user_info.get('user')).first()
-    print(comment_obj)
-    return JsonResponse({'code': 200, 'message': 'none'})
+    try:
+        assert user_info, 'user is none'  # 验证用户是否登录
+    except AssertionError as err:
+        print(err)
+        return JsonResponse({'code': 500, 'message': 'You do not have permission'})
+
+    if adoption_review(topic_id=topic_id, user_user=user_info.get('user')):  # 采纳评论前的验证工作
+        if Comment.objects.filter(topic_id=topic_id, id=comment_id, user=user_info.get('user')).update(
+                adoption=True):  # 找到评论,修改采纳状态.
+            return JsonResponse({'code': 200, 'message': 'Success'})
+        else:
+            return JsonResponse({'code': 300, 'message': 'adoption failure'})
+    else:
+        return JsonResponse({'code': 300, 'message': '无法采纳评论'})
