@@ -93,6 +93,7 @@ class Comment(models.Model):
     reply_obj = models.ForeignKey(to='self', on_delete=models.CASCADE, verbose_name='回复对象', null=True,
                                   related_name='reply')
     content = HTMLField(verbose_name='评论内容')
+    adoption = models.BooleanField(verbose_name='采纳', default=False, null=False)
     status = models.BooleanField(verbose_name='审核状态', default=True)
     delete_status = models.BooleanField(verbose_name='删除状态', default=False)
     ip = models.CharField(verbose_name='游客ip', max_length=48, null=True)

@@ -1,6 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse, Http404
 from django.http import JsonResponse
-from django.template import loader
 from .plug_ins import sort_out_tag, save_topic, get_topic, modify_loc, get_paginator
 from .models import Area, Topic, Comment, Collection, Tag
 from django.db.models import Q
@@ -264,9 +263,20 @@ def topic_loc(request):
     # 如果有key_id 表示关系处理正常,修改话题相关字段值.
     if key_id:
         topic = Topic.objects.filter(pk=key_id).first()
-        topic.like += result.pop('like')
+        topic.like += result.pop('like')  # 这里有bug 在高并发的情况下容易出错.不应该查询再增减而是通过sql直接修改数据
         topic.contra += result.pop('contra')
         topic.save()
         return JsonResponse(result)
     else:
         raise Http404
+
+
+def adoption(request):
+    """采纳评论视图"""
+    topic_id = request.POST.get('topic_id')
+    comment_id = request.POST.get('comment_id')
+    user_info = request.session.get('user')
+
+    comment_obj = Comment.objects.filter(topic_id=topic_id, id=comment_id, user=user_info.get('user')).first()
+    print(comment_obj)
+    return JsonResponse({'code': 200, 'message': 'none'})

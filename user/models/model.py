@@ -1,6 +1,5 @@
 from django.db import models
 from hashlib import sha1
-import datetime
 import os
 
 

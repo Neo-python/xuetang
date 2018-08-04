@@ -79,7 +79,8 @@
                                                     class="fa fa-flag"></i>&nbsp;举报
                                             </button>
                                             {% ifequal USER.user topic.user.user %}
-                                                <button class="menu-btn color-gray1 margin-left24 fa-hover"><i
+                                                <button class="menu-btn color-gray1 margin-left24 fa-hover adoption-btn"
+                                                        data-id="{{ foo.id }}"><i
                                                         class="fa fa-check"></i>&nbsp;采纳
                                                 </button>
                                             {% endifequal %}
@@ -90,9 +91,9 @@
                                         <div id="reply-{{ foo.id }}">
                                             {% if USER %}
 
-{#                                                {% if comments %}#}
-{##}
-{#                                                {% endif %}#}
+                                                {#                                                {% if comments %}#}
+                                                {##}
+                                                {#                                                {% endif %}#}
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" id="reply{{ foo.id }}">
                                                 </div>

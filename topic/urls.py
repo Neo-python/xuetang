@@ -1,6 +1,6 @@
 from django.urls import path
 from topic.views import release, topic_index, discuss, comment, get_reply, collection, comment_loc, topic_loc, \
-    search_topic, modify
+    search_topic, modify, adoption
 
 app_name = 'topic'
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('collection/', view=collection, name='collection'),
     path('comment_loc/', view=comment_loc, name='comment_loc'),
     path('topic_loc/', view=topic_loc, name='topic_loc'),
+    path('adoption/', view=adoption, name='adoption')
 ]
