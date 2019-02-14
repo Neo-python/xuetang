@@ -16,3 +16,4 @@ jquery<br>
 tinymce      一款简洁的富文本编辑器<br>
 font-awesome        图标与字体
 <h3>其他Python依赖</h3>
+Pillow      图形处理,用于生成验证码.<br>
