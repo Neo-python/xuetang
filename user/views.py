@@ -116,7 +116,7 @@ def user_index(request, user_nickname):
     user = User.objects.filter(nickname=user_nickname).first()
     # collect:请求查看收藏夹
     # 以collect请求与is_self共同判断是否展示收藏夹.
-    collect = eval(request.GET.get('collect', 'False'))
+    collect = {'True': True, 'False': False}[request.GET.get('collect', 'False')]
     self = is_self(request, user)
     if collect and self:
         topics = [i.topic_id for i in user.collections.all()]

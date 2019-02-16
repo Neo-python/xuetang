@@ -111,7 +111,7 @@ def modify_loc(request, model):
     """
     # key_field: 关系对象id字段 status请求状态True或False
     key_field = request.GET.get(model)
-    status = eval(request.GET['status'])
+    status = {'True': True, 'False': False}[request.GET['status']]
     user = request.session.get('user')
     result = {}
     if user:
